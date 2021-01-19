@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import 'counter.dart';
+import 'counter_controller.dart';
+
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-final StateProvider<int> counterProvider = StateProvider((ref) => 0);
+final StateNotifierProvider<CounterController> counterProvider =
+    StateNotifierProvider((ref) => CounterController());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key key}) : super(key: key);
@@ -49,7 +53,7 @@ class MyHomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final StateController<int> counter = useProvider(counterProvider);
+    final Counter counter = useProvider(counterProvider.state);
 
     return Scaffold(
       appBar: AppBar(
@@ -81,14 +85,14 @@ class MyHomePage extends HookWidget {
               'You have pushed the button this many times:',
             ),
             Text(
-              '${counter.state}',
+              '${counter.data}',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => counter.state++,
+        onPressed: () => context.read(counterProvider).increment(),
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
